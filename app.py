@@ -189,6 +189,53 @@ st.markdown("""
     .s-brief{display:block}.s-hero-title{font-size:2.0rem}.st-key-nav_stattum{padding:10px 9px}}
   @media (prefers-reduced-motion:reduce){.s-hero-graphic polyline{animation:none;stroke-dashoffset:0}
     .s-asset{transition:none}.s-asset:hover{transform:none}}
+
+  /* Ajuste de marca e inicio: el logo original no se repite sobre el hero. */
+  .s-nav-mark {position:relative;width:100%;height:80px;max-width:290px;display:flex;
+    align-items:center;justify-content:center;isolation:isolate;overflow:hidden;
+    padding:7px 32px 7px 12px;margin:-9px 0 -9px -16px;
+    background:linear-gradient(120deg,#fffefa 0%,#f9f7f3 77%,#e6f4ff 100%);
+    border-radius:18px 8px 64px 18px;}
+  .s-nav-mark img {display:block;width:100%;max-width:232px;height:68px;
+    object-fit:contain;mix-blend-mode:multiply;border:0;border-radius:0;}
+  .s-nav-mark .s-brand-fallback {font-size:1.55rem;color:#0759a7;font-weight:900;}
+  .st-key-hero_stattum {position:relative;background:linear-gradient(115deg,#06254a 0%,#063968 55%,#07558d 100%);
+    border:1px solid rgba(74,197,255,.24);border-radius:27px;overflow:hidden;
+    box-shadow:0 19px 45px rgba(3,41,86,.16);padding:44px clamp(20px,4vw,63px);
+    margin-bottom:21px;}
+  .st-key-hero_stattum:before {content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(ellipse at 88% 24%,rgba(32,196,254,.19),transparent 45%),
+    linear-gradient(145deg,transparent 61%,rgba(41,171,243,.08) 100%);}
+  .st-key-hero_stattum:after {content:"";position:absolute;left:0;right:0;bottom:0;height:5px;
+    background:linear-gradient(90deg,transparent 0%,#20c4f4 52%,transparent 100%);opacity:.66;}
+  .s-hero-copy {position:relative;z-index:1;max-width:660px;}
+  .s-hero-title {font-size:clamp(2.2rem,3.5vw,4.05rem);margin:15px 0 17px;}
+  .s-hero-sub {color:#d8edff!important;font-size:1.05rem;line-height:1.72;max-width:580px;margin:0 0 22px;}
+  .s-city-visual {width:100%;height:auto;max-height:370px;display:block;position:relative;
+    filter:drop-shadow(0 18px 22px rgba(0,16,42,.18));}
+  .s-city-visual .s-stock-path {stroke-dasharray:950;stroke-dashoffset:950;
+    animation:s-draw 2.7s ease-out forwards;}
+  .s-city-visual .s-stock-dot {animation:s-dot-in .5s ease-out 2.4s both;}
+  .s-hero-caption {color:#aad5ef;font-size:.77rem;letter-spacing:.02em;text-align:center;margin-top:-5px;}
+  @keyframes s-dot-in {from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
+  @media (max-width:750px) {
+    .st-key-hero_stattum {padding:27px 20px 20px}
+    .s-city-visual {max-height:235px}
+    .st-key-nav_stattum [data-testid="stHorizontalBlock"] {display:grid!important;
+      grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important;}
+    .st-key-nav_stattum [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] {
+      width:100%!important;min-width:0!important;flex:none!important;}
+    .st-key-nav_stattum [data-testid="stHorizontalBlock"] > [data-testid="stColumn"]:first-child {grid-column:1/-1;}
+    .s-nav-mark {max-width:270px;height:65px;margin:-7px auto 5px -10px;padding-right:25px}
+    .s-nav-mark img {height:57px;max-width:215px}
+    .st-key-nav_stattum .stButton>button {min-height:39px!important;font-size:.85rem!important}
+  }
+  @media (max-width:560px) {.s-hero-title{font-size:2.1rem}}
+  @media (prefers-reduced-motion:reduce) {
+    .s-city-visual .s-stock-path {animation:none;stroke-dashoffset:0}
+    .s-city-visual .s-stock-dot {animation:none}
+  }
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -307,7 +354,7 @@ def menu() -> None:
     etiquetas = {"Inicio": "⌂  Inicio", "Análisis": "▥  Análisis",
                  "Simulador": "▦  Simulador", "Conclusiones": "◎  Conclusiones"}
     with st.container(key="nav_stattum"):
-        columnas = st.columns([1.7, 1.0, 1.05, 1.13, 1.37], gap="small", vertical_alignment="center")
+        columnas = st.columns([2.05, 1.0, 1.05, 1.13, 1.37], gap="small", vertical_alignment="center")
         with columnas[0]:
             st.markdown(html_logo_principal("s-nav-mark"), unsafe_allow_html=True)
         for i, pagina in enumerate(PAGINAS, start=1):
@@ -331,27 +378,66 @@ def porc(valor: float) -> str:
 
 
 def pagina_inicio() -> None:
+    # El logotipo oficial solo se muestra en el encabezado de navegación.
     with st.container(key="hero_stattum"):
-        iz, de = st.columns([1.13, 1.16], gap="large", vertical_alignment="center")
-        with iz:
-            st.markdown(html_logo_principal("s-hero-identity"), unsafe_allow_html=True)
-        with de:
+        texto, visual = st.columns([1.1, 1.0], gap="large", vertical_alignment="center")
+        with texto:
             st.markdown("""
-            <div class="s-hero-kicker">Descubre el mercado con datos</div>
-            <h1 class="s-hero-title">Bienvenido a <b>STATTUM</b></h1>
-            <p class="s-hero-sub">Compara activos del mercado colombiano, comprende sus riesgos
-            y simula posibles resultados de inversión en una plataforma clara e interactiva.</p>
-            <svg class="s-hero-graphic" viewBox="0 0 580 118" aria-label="Gráfica bursátil animada" role="img">
-              <g opacity=".15" fill="#41d3ff"><rect x="25" y="76" width="24" height="42"/>
-              <rect x="93" y="63" width="24" height="55"/><rect x="162" y="78" width="24" height="40"/>
-              <rect x="232" y="44" width="24" height="74"/><rect x="313" y="52" width="24" height="66"/>
-              <rect x="392" y="26" width="24" height="92"/><rect x="465" y="11" width="24" height="107"/></g>
-              <polyline points="1,97 46,87 78,94 123,53 170,69 223,42 265,54 311,35 360,46 411,20 460,33 515,6 568,11"
-              fill="none" stroke="#55e6ff" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" />
-            </svg>""", unsafe_allow_html=True)
+            <div class="s-hero-copy">
+              <div class="s-hero-kicker">ANÁLISIS FINANCIERO INTELIGENTE</div>
+              <h1 class="s-hero-title">Bienvenido a <b>STATTUM</b></h1>
+              <p class="s-hero-sub">Compara activos del mercado colombiano, comprende sus riesgos
+              y explora posibles escenarios de inversión con una experiencia clara e intuitiva.</p>
+            </div>""", unsafe_allow_html=True)
             if st.button("Comenzar análisis  →", type="primary", use_container_width=True,
                          key="boton_inicio_analisis"):
                 ir_a("Análisis")
+        with visual:
+            st.markdown("""
+            <svg class="s-city-visual" viewBox="0 0 620 360" role="img"
+                aria-label="Ilustración estilizada de montañas, ciudad y gráfica financiera ascendente"
+                xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="s-mountain" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0" stop-color="#2a9bcd" stop-opacity=".42"/>
+                  <stop offset="1" stop-color="#1468a8" stop-opacity=".10"/>
+                </linearGradient>
+                <linearGradient id="s-city" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0" stop-color="#35d3f4" stop-opacity=".43"/>
+                  <stop offset="1" stop-color="#1b75b9" stop-opacity=".1"/>
+                </linearGradient>
+                <linearGradient id="s-graph-area" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0" stop-color="#4ce6ff" stop-opacity=".24"/>
+                  <stop offset="1" stop-color="#4ce6ff" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <g opacity=".45" stroke="#89dfff" stroke-width="1" stroke-dasharray="3 9">
+                <path d="M20 100H604 M20 160H604 M20 220H604 M20 280H604"/>
+              </g>
+              <path d="M0 257L71 204L120 229L194 154L257 223L322 169L384 211L453 133L514 178L574 128L620 160V352H0Z"
+                fill="url(#s-mountain)"/>
+              <path d="M0 306L69 279L129 298L205 235L267 271L336 221L401 265L487 209L555 258L620 232V352H0Z"
+                fill="#0d477a" opacity=".55"/>
+              <g fill="url(#s-city)">
+                <rect x="68" y="251" width="29" height="101" rx="2"/>
+                <rect x="111" y="227" width="26" height="125" rx="2"/>
+                <rect x="156" y="273" width="44" height="79" rx="2"/>
+                <rect x="215" y="236" width="30" height="116" rx="2"/>
+                <rect x="263" y="204" width="37" height="148" rx="2"/>
+                <rect x="314" y="248" width="29" height="104" rx="2"/>
+                <rect x="369" y="198" width="41" height="154" rx="2"/>
+                <rect x="428" y="236" width="30" height="116" rx="2"/>
+                <rect x="477" y="187" width="39" height="165" rx="2"/>
+                <rect x="536" y="218" width="31" height="134" rx="2"/>
+              </g>
+              <path d="M34 287L85 266L130 278L181 228L235 243L289 181L337 199L391 149L441 166L502 104L551 115L598 56V350H34Z"
+                fill="url(#s-graph-area)"/>
+              <path class="s-stock-path" d="M34 287L85 266L130 278L181 228L235 243L289 181L337 199L391 149L441 166L502 104L551 115L598 56"
+                fill="none" stroke="#5aeaff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle class="s-stock-dot" cx="598" cy="56" r="8" fill="#b6faff"/>
+            </svg>
+            <p class="s-hero-caption">Explora el mercado con datos y perspectiva.</p>
+            """, unsafe_allow_html=True)
 
     seccion("¿Qué ofrece STATTUM?", "Toda la información esencial organizada para que puedas explorar sin perderte.")
     st.markdown("""
